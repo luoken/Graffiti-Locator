@@ -1,5 +1,7 @@
 import tensorflow as tf, sys
 
+file = open("Graffiti_Incidents_new.csv","a+")
+
 image_path = sys.argv[1]
 
 # Read in the image_data
@@ -28,4 +30,9 @@ with tf.Session() as sess:
     for node_id in top_k:
         human_string = label_lines[node_id]
         score = predictions[0][node_id]
+        string = "GRAFFITI\ ID,DATE,ADDRESS,CITY,ZIP\ CODE,Notes,SHORT\ DESCRIPTION" + "," + human_string + "," + score + "\n"
+        file.write(string)
         print('%s (score = %.5f)' % (human_string, score))
+        
+        
+file.close()
