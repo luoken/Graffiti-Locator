@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Maps</title>
+
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  /*
+    To add a map, must have a height and width defined in css, then create a div with class label in body
+    see:
+      https://developers.google.com/maps/documentation/javascript/reference/3.exp/map
+  */
+  #pano {
+    height: 400px;
+    width: 100%;
+  }
+  #map_a {
+    height: 200px;
+    width: 100%;
+  }
+  #map_b {
+    height: 200px;
+    width: 100%;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h6>Google Maps testing</h6>
+    <br>
+
+    <div class="row">
+      <div class="col-md-6" id="pano"></div>
+      <br>
+      <div class="col">
+        <div class="col-md-12" id="map_a"></div>
+        <div class="col-md-12" id="map_b"></div>
+      </div>
+    </div>
+
+    <hr class="mb-4">
+
+    <div class="col-md-8">
+      
+      <form class="needs-validation was-value" nonvalidate>
+        <div class="row">
+          <div class="col-md-4 mb-2">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address" placeholder value required>
+            <div class="invalid-feedback">Valid address required.</div>
+          </div>
+          <div class="col-md-4 mb-2">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" placeholder value required>
+            <div class="invalid-feedback">Valid city required.</div>
+          </div>
+          <div class="col-md-4 mb-2">
+            <label for="zip">Zip</label>
+            <input type="text" class="form-control" id="zip" placeholder value required>
+            <div class="invalid-feedback">Valid zip code required.</div>
+          </div>
+        </div>
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+      </form>
+
+    </div>
+
+    <script>
+
+    direction = {
+      "north": 0,
+      "east": 90,
+      "south": 180,
+      "west": 270
+    };
+
+    /* setup for maps */
+    function initMap() {
+      var uluru = {lat:33.981590, lng:-118.246518}; // lat, long of my hood
+      //var uluru = {lat: -25.363, lng: 131.044};
+
+      // creates the street view
+      var pano_view = new google.maps.StreetViewPanorama(
+        document.getElementById('pano'), {
+          position: uluru,
+          pov: {
+            heading: direction["west"],
+            pitch: 0,
+            zoom: 1
+        }
+      });
+
+      // satellite map view
+      var map_view_a = new google.maps.Map(
+        document.getElementById('map_a'), {
+          zoom: 20,
+          center: uluru,
+          mapTypeId: "satellite"
+      });
+
+      // default map view with a marker
+      var map_view_b = new google.maps.Map(
+        document.getElementById('map_b'), {
+          zoom: 18,
+          center: uluru
+      });
+      var marker_b = new google.maps.Marker( {
+        position: uluru,
+        map: map_view_b // add map obj here
+      });
+    }
+    </script>
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDeMR1oDoI4bSH3BdPQi1acfAhCcth-ctE&callback=initMap">
+    </script>
+
+  </div>
+
+  <footer></footer>
+</body>
+
+</html>
