@@ -26,6 +26,10 @@
     height: 200px;
     width: 100%;
   }
+  #map_loc {
+    height: 200px;
+    width: 100%;
+  }
   </style>
 </head>
 
@@ -43,11 +47,12 @@
         <div class="col-md-12" id="map_b"></div>
       </div>
     </div>
+    <div class="col-md-6" id="map_loc"></div>
 
     <hr class="mb-4">
 
     <div class="col-md-8">
-      
+
       <form class="needs-validation was-value" nonvalidate>
         <div class="row">
           <div class="col-md-4 mb-2">
@@ -73,8 +78,9 @@
     </div>
 
     <script>
+    var map_find, infoWindow; // for position track - takes a while... 
 
-    direction = {
+    var direction = {
       "north": 0,
       "east": 90,
       "south": 180,
@@ -83,8 +89,8 @@
 
     /* setup for maps */
     function initMap() {
-      var uluru = {lat:33.981590, lng:-118.246518}; // lat, long of my hood
-      //var uluru = {lat: -25.363, lng: 131.044};
+      var uluru = {lat: 33.981590, lng: -118.246518}; // lat, long of my hood
+      var doc = {lat: 37.752810, lng: -100.021363};
 
       // creates the street view
       var pano_view = new google.maps.StreetViewPanorama(
@@ -115,7 +121,49 @@
         position: uluru,
         map: map_view_b // add map obj here
       });
+
+      map_find = new google.maps.Map(document.getElementById("map_loc"), {
+        center: doc,
+        zoom: 18
+      });
+      infoWindow = new google.maps.InfoWindow;
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          //infoWindow.setPosition(pos);
+          infoWindow.setContent("Location found.");
+          //infoWindow.open(map_find);
+          map_find.setCenter(pos);
+          var marker_c = new google.maps.Marker( {
+            position: pos,
+            map: map_find // add map obj here
+          });
+          marker_c.addListener("click", function() {
+            infoWindow.open(map_find, marker_c);
+          });
+        }, function() {
+          handleLocationError(true, infoWindow, map_find.getCenter() );
+        });
+      } else {
+        handleLocationError(false, infoWindow, map_find.getCenter() );
+      }
+
+    } // end of initMap
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(
+        browserHasGeolocation ?
+        "Error: The Geolocation service FAILED!!!":
+        "Error: Your browser doesn\'t support geolocation....."
+      );
+      infoWindow.open(map_find);
     }
+
     </script>
 
     <script async defer
